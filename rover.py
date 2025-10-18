@@ -27,6 +27,51 @@ move_delta = {
     "W": (-1, 0)
 }
 
+##let's start by checking possibile errors in the input data
+def validate_input(data):
+
+    # Returns (True, None) if valid, or (False, error_message) if invalid.
+
+    # Check that the 'commands' field exists
+    if "commands" not in data:
+        return False, "Missing 'commands' field."
+
+    commands = data["commands"]
+    if not isinstance(commands, str):
+        return False, "'commands' must be a string."
+    
+    # Check the validity of commands
+    valid_cmds = set("fblr")
+    invalid = [c for c in commands if c.lower() not in valid_cmds]
+    if invalid:
+        return False, f"Invalid command(s): {invalid}. Allowed: f, b, l, r."
+
+    # Check start direction
+    start = data.get("start", {})
+    direction = start.get("dir", "N")
+    if direction not in ["N", "E", "S", "W"]:
+        return False, f"Invalid start direction '{direction}'. Must be one of: N, E, S, W."
+
+    # Check grid dimensions
+    grid = data.get("grid", {})
+    if "width" in grid and (not isinstance(grid["width"], int) or grid["width"] <= 0):
+        return False, "'grid.width' must be a positive integer."
+    if "height" in grid and (not isinstance(grid["height"], int) or grid["height"] <= 0):
+        return False, "'grid.height' must be a positive integer."
+
+    # Check obstacles
+    obstacles = data.get("obstacles", [])
+    if not isinstance(obstacles, list):
+        return False, "'obstacles' must be a list."
+    for o in obstacles:
+        if not all(k in o for k in ("x", "y")):
+            return False, f"Obstacle {o} missing x or y."
+        if not isinstance(o["x"], int) or not isinstance(o["y"], int):
+            return False, f"Obstacle coordinates must be integers. Got: {o}"
+
+    return True, None
+
+
 
 #now let's define the POST method of the API.
 #in this post method we'll need to pass the grid dimentions, starting position and direction of the rover, list of obstacles and commands to execute.
@@ -34,6 +79,12 @@ move_delta = {
 def move_rover():
     #let's retrieve here the body in json format
     data = request.get_json()
+
+    #Let's first check the validity of the input data
+    
+    valid, error = validate_input(data)
+    if not valid:
+        return jsonify({"error": error}), 400
 
     #let's assign the values from the json to variables
     #if a field is missing we set a default value
