@@ -106,10 +106,6 @@ Notes
 - PowerShell may block activating virtualenv scripts depending on your execution policy. If activation is blocked, either run the activation from an admin PowerShell and set a less restrictive policy (e.g., `Set-ExecutionPolicy RemoteSigned`) or use cmd.exe to activate the venv.
 - The Flask server in this repo runs in debug mode by default. Do not use the development server in production.
 
-If you want, I can:
-- Add a `requirements.txt` with pinned versions
-- Convert `test_post.py` to `pytest` tests and add a test runner
-- Normalize error response shapes and update tests to assert exact messages
 
 Enjoy! 
 
