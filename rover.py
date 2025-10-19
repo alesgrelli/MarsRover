@@ -134,7 +134,7 @@ def rover_command():
         processed += 1 #increment the number of processed commands
 
     result = {
-        "position": {"x": x, "y": y, "dir": direction},         #final position and direction of the rover
+        "position": {"x": x, "y": y, "dir": direction},         #final position and direction of the rover 
         "hit_obstacle": hit_obstacle,                           #True if an obstacle was hit
         "obstacle_at": obstacle_at,                             #position of the obstacle if hit
         "processed_commands": processed,                         #number of commands that were processed
